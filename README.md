@@ -1,54 +1,44 @@
-# CakePHP 5.x スケルトン
+# CakePHP 5.x Boostrap 導入
 
 ## CakePHP インストール手順
 
-1. 起動
-    ```
-    $ docker-compose up -d
-    ```
-2. コンテナに入る
-   ```
-   $ docker exec -it app bash
-    ```
-3. CakePHP 5.x インストール用シェルを実行
-    ```
-    $ sh docker/install-cake5.sh
+参考: https://github.com/FriendsOfCake/bootstrap-ui
 
-   途中、以下のようなメッセージがでるので「Y」を入力
-   Set Folder Permissions ? (Default to Y) [Y,n]?
-   ```
-4. サイトアクセス
+プラグインをCakePHP内に組み込むやり方ではなく、`npm`で`boostrap`を入れて
+それをViewに反映させる方法
+
+1. composerに追加
     ```
-    http://localhost/
+   composer require friendsofcake/bootstrap-ui
    ```
-
-## CakePHP 初期設定手順(ローカル)
-
-1. `config/.env.example`を`config/.env`にリネームして、以下の項目を環境に合わせて修正
-    ```js:.env
-    export APP_NAME="__APP_NAME__"  <== プロジェクト名
-    export DEBUG="true"
-    export APP_ENCODING="UTF-8"
-    export APP_DEFAULT_LOCALE="en_US"   <== ja_JP
-    export APP_DEFAULT_TIMEZONE="UTC"   <== Asia/Tokyo
-    export SECURITY_SALT="__SALT__"     <== ランダムな32文字以上
+2. Pluginをロード
     ```
-2. `config/app_local.php`のDB接続部分を修正
-3. `config/bootstrap.php`の以下の部分のコメントアウトを解除(68行目あたり)
-    ```php
-   if (!env('APP_NAME') && file_exists(CONFIG . '.env')) {
-     $dotenv = new \josegonzalez\Dotenv\Loader([CONFIG . '.env']);
-     $dotenv->parse()
-         ->putenv()
-         ->toEnv()
-         ->toServer();
-    }
+   bin/cake plugin load BootstrapUI
    ```
-4. サイトにアクセスして、WelcomeページのDatabaseの欄が「CakePHP is able to connect to the database.」となっていれば接続OK
-
+3. npmでboostrapをインストール
+    ```
+    npm install @popperjs/core@2 bootstrap@5 bootstrap-icons@1
+    ```
+4. 必要なファイルをコピー
+    ```
+   cp node_modules/@popperjs/core/dist/umd/popper.js webroot/js
+   cp node_modules/@popperjs/core/dist/umd/popper.min.js webroot/js
+   cp node_modules/bootstrap/dist/css/bootstrap.css webroot/css/
+   cp node_modules/bootstrap/dist/css/bootstrap.min.css webroot/css/
+   cp node_modules/bootstrap/dist/js/bootstrap.js webroot/js/
+   cp node_modules/bootstrap/dist/js/bootstrap.min.js webroot/js/
+   cp node_modules/bootstrap-icons/font/bootstrap-icons.css webroot/font/
+   cp node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff webroot/font/fonts/
+   cp node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2 webroot/font/fonts/
+   cp vendor/friendsofcake/bootstrap-ui/webroot/font/bootstrap-icon-sizes.css webroot/font/
+   ```
+5. layoutに追加
+    ```
+   <?php
+   echo $this->Html->css('/path/to/bootstrap.css');
+   echo $this->Html->css(['/path/to/bootstrap-icons.css', '/path/to/bootstrap-icon-sizes.css']);
+   echo $this->Html->script(['/path/to/popper.js', '/path/to/bootstrap.js']);
+   ?>
+   ```
 ___
 
-#### 参考
-
-> https://tt-computing.com/cake5-docker-shellscript
-> https://zenn.dev/neko_ningen/articles/b68b40ec92c795
