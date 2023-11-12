@@ -35,9 +35,9 @@
 5. layoutに追加
     ```
    <?php
-   echo $this->Html->css('/path/to/bootstrap.css');
-   echo $this->Html->css(['/path/to/bootstrap-icons.css', '/path/to/bootstrap-icon-sizes.css']);
-   echo $this->Html->script(['/path/to/popper.js', '/path/to/bootstrap.js']);
+       echo $this->Html->css('bootstrap.min');
+       echo $this->Html->css(['/font/bootstrap-icons', '/font/bootstrap-icon-sizes']);
+       echo $this->Html->script(['popper.min', 'bootstrap.min']);
    ?>
    ```
 ___
